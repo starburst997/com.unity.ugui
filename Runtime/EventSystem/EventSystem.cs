@@ -46,6 +46,14 @@ namespace UnityEngine.EventSystems
             }
         }
 
+        // Needed to disable "focus" because my project was in a iframe and it was annoying when focus would change that "hover" event wouldn't get processed until I focus on the iframe first
+        // Tried to override the class but then had really weird issue on ios (native only not webgl for some reason)
+        // So the solution was to actually fork the whole package and do the modification myself...
+        // Never figure out why there would be a difference when overriding the class, doesn't makes sense unless there is some weird stuff going on somewhere
+        // like reflection or something... Anyway I just want my stuff to work so if I have to fork this then so be it
+        public bool AllowFocus;
+        public bool AllowFocusWebGL;
+        
         [SerializeField]
         [FormerlySerializedAs("m_Selected")]
         private GameObject m_FirstSelected;
@@ -455,6 +463,12 @@ namespace UnityEngine.EventSystems
 
         protected virtual void OnApplicationFocus(bool hasFocus)
         {
+#if UNITY_WEBGL
+            if (!AllowFocusWebGL) return;
+#else
+            if (!AllowFocus) return;
+#endif
+            
             m_HasFocus = hasFocus;
             if (!m_HasFocus)
                 TickModules();
