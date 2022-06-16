@@ -542,9 +542,11 @@ namespace UnityEngine.EventSystems
 
             m_CurrentFocusedGameObject = leftButtonData.buttonData.pointerCurrentRaycast.gameObject;
 
+            // Enter event should be processed first (hover)
+            ProcessMove(leftButtonData.buttonData);
+            
             // Process the first mouse button fully
             ProcessMousePress(leftButtonData);
-            ProcessMove(leftButtonData.buttonData);
             ProcessDrag(leftButtonData.buttonData);
 
             // Now process right / middle clicks
